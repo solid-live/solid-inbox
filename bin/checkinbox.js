@@ -27,6 +27,11 @@ function bin (argv) {
   })
 }
 
+/**
+ * process result per inbox item
+ * @param  {string} file uri to process
+ * @return {object} a function that processes results
+ */
 function processResult (file) {
   return function (err, res) {
     if (!err) {
