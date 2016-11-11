@@ -1,6 +1,6 @@
 {
   "name": "sl_inbox",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Solid Live Inbox",
   "main": "index.js",
   "scripts": {
@@ -19,5 +19,8 @@
   "bugs": {
     "url": "https://github.com/solid-live/solid-inbox/issues"
   },
-  "homepage": "https://github.com/solid-live/solid-inbox#readme"
+  "homepage": "https://github.com/solid-live/solid-inbox#readme",
+  "dependencies": {
+    "rdf-shell": "^0.4.3"
+  }
 }
