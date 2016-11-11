@@ -1,0 +1,23 @@
+{
+  "name": "sl_inbox",
+  "version": "0.0.2",
+  "description": "Solid Live Inbox",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/solid-live/solid-inbox.git"
+  },
+  "keywords": [
+    "solid",
+    "inbox"
+  ],
+  "author": "Melvin Carvalho <melvincarvalho@gmail.com> (https://melvincarvalho.com/#me)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/solid-live/solid-inbox/issues"
+  },
+  "homepage": "https://github.com/solid-live/solid-inbox#readme"
+}
