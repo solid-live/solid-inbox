@@ -8,8 +8,7 @@ var util = shell.util
 
 /**
  * list the contents of a directory
- * @param  {[type]} argv [description]
- * @return {[type]}      [description]
+ * @param  {Array} argv Arguments takes inbox
  */
 function bin (argv) {
   var uri = argv[2] || 'https://melvin.solid.live/inbox/'
