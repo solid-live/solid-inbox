@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 var shell = require('rdf-shell')
-var $rdf = require('rdflib')
+$rdf = require('rdflib')
 var util = shell.util
 
 /**
@@ -37,10 +37,12 @@ function processResult (file) {
     if (!err) {
       var g = $rdf.graph()
 
+      $rdf.parse(res, g, file, 'text/turtle')
+
       var pt = util.primaryTopic(g, file)
       var SIOC = $rdf.Namespace('http://rdfs.org/sioc/ns#')
-
       var isPost = util.is(g, pt, SIOC('Post').uri)
+
       if (isPost) {
         console.log('SIOC Post found!', pt)
         console.log(res)
