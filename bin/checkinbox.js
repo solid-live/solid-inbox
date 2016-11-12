@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+var debug = require('debug')('sl-inbox:checkinbox')
 var shell = require('rdf-shell')
 $rdf = require('rdflib')
 var util = shell.util
@@ -35,23 +36,68 @@ function bin (argv) {
 function processResult (file) {
   return function (err, res) {
     if (!err) {
-      var g = $rdf.graph()
+      var store = $rdf.graph()
 
-      $rdf.parse(res, g, file, 'text/turtle')
+      $rdf.parse(res, store, file, 'text/turtle')
 
-      var pt = util.primaryTopic(g, file)
+      var pt = util.primaryTopic(store, file)
       var SIOC = $rdf.Namespace('http://rdfs.org/sioc/ns#')
-      var isPost = util.is(g, pt, SIOC('Post').uri)
+      var isPost = util.is(store, pt, SIOC('Post').uri)
 
       if (isPost) {
-        console.log('SIOC Post found!', pt)
-        console.log(res)
+        processPost(store, pt)
       }
     } else {
       console.error(err)
     }
   }
 }
+
+/**
+ * process a post
+ * @param  {object} store rdflib store
+ * @param  {[type]} uri   uri of the post
+ */
+function processPost(store, uri) {
+  console.log('SIOC Post found!', uri)
+  var v = validatePost(store, uri)
+  if (v) {
+    console.log('post valid')
+    var SOLID = $rdf.Namespace('http://www.w3.org/ns/solid/terms#')
+    var timeline = store.any($rdf.sym(uri), SOLID('timeline'))
+    if (timeline) {
+      moveToTimeline(store, uri)
+    }
+  } else {
+    console.log('post invalid')
+  }
+}
+
+/**
+ * validate a post
+ * @param  {object} store rdflib store
+ * @param  {[type]} uri   uri of the post
+ * @return true if post is valid
+ */
+function validatePost(store, uri) {
+  var ret = true
+
+  return ret
+}
+
+/**
+ * move a post to timeline
+ * @param  {object} store rdflib store
+ * @param  {[type]} uri   uri of the post
+ */
+function moveToTimeline(store, uri) {
+  var SOLID = $rdf.Namespace('http://www.w3.org/ns/solid/terms#')
+  var timeline = store.any($rdf.sym(uri), SOLID('timeline'))
+  debug('timeline', timeline)
+  var st = store.statementsMatching($rdf.sym(uri))
+  debug('st', st)
+}
+
 
 // If one import this file, this is a module, otherwise a library
 if (require.main === module) {

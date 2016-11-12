@@ -1,6 +1,6 @@
 {
   "name": "sl_inbox",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "Solid Live Inbox",
   "main": "index.js",
   "scripts": {
