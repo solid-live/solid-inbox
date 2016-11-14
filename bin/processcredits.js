@@ -114,18 +114,29 @@ function sendToAPI (store, uri) {
     fetcher.nowOrWhenFetched($rdf.sym(wallet.uri.split('#')[0]), null, function() {
       var api = store.any(wallet, CURR('api'))
       console.log('api', api)
+      var timestamp = new Date().toISOString()
       if (api) {
         var cert = process.env['CREDIT_CERT'] || process.env['CERT']
-        var cmd = 'curl --key ' + cert + ' --cert ' + cert + ' --data "source=' + source.uri + '&destination=' + destination.uri + '&amount=' + amount + '" ' + api.uri + 'insert'
+        var cmd = 'curl --key ' + cert + ' --cert ' + cert + ' --data "source=' + source.uri + '&destination=' + destination.uri + '&amount=' + amount + '&timestamp=' + timestamp + '" ' + api.uri + 'insert'
         console.log('cmd', cmd)
+
         exec(cmd, function(err, stdout, stderr){
           if (err) {
             console.error(err)
           } else {
             console.log('stderr', stderr)
             console.log('stdout', stdout)
+            console.log('Removing uri', uri.split('#')[0])
+            shell.rm(uri.split('#')[0], function(err, ret) {
+              if (!err) {
+                debug(ret)
+              } else {
+                debug(err)
+              }
+            })
           }
         })
+
       }
     })
   }
