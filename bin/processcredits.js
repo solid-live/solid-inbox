@@ -19,6 +19,35 @@ function bin (argv) {
   if (!uri) {
     console.error('uri is required')
   }
+  //processCredits(uri, function(err, res) {
+  //  if (err) {
+  //    console.error(err)
+  //  } else {
+  //    console.log(res)
+  //  }
+  //})
+  shell.sub(uri, function(err, res) {
+    if (err) {
+      console.error(err)
+    } else {
+      console.log('res', res)
+      processCredits(uri, function(err, res) {
+        if (err) {
+          console.error(err)
+        } else {
+          console.log(res)
+        }
+      })
+    }
+  })
+}
+
+/**
+ * process credits from an inbox
+ * @param  {[type]}   uri      inbox uri
+ * @param  {Function} callback callback function
+ */
+function processCredits(uri, callback) {
   console.log('Scanning inbox:', uri)
   shell.ls(uri, function (err, arr) {
     if (!err) {
@@ -27,7 +56,7 @@ function bin (argv) {
         shell.cat(file, processResult(file))
       }
     } else {
-      console.error(err)
+      callback(err)
     }
   })
 }
@@ -107,6 +136,7 @@ function sendToAPI (store, uri) {
   var amount = store.any($rdf.sym(uri), CURR('amount'))
   var source = store.any($rdf.sym(uri), CURR('source'))
   var destination = store.any($rdf.sym(uri), CURR('destination'))
+  var description = store.any($rdf.sym(uri), CURR('description'))
   console.log('wallet', wallet)
   var fetcher = new $rdf.Fetcher(store, 2000)
 
@@ -117,7 +147,7 @@ function sendToAPI (store, uri) {
       var timestamp = new Date().toISOString()
       if (api) {
         var cert = process.env['CREDIT_CERT'] || process.env['CERT']
-        var cmd = 'curl --key ' + cert + ' --cert ' + cert + ' --data "source=' + source.uri + '&destination=' + destination.uri + '&amount=' + amount + '&timestamp=' + timestamp + '" ' + api.uri + 'insert'
+        var cmd = 'curl --key ' + cert + ' --cert ' + cert + ' --data "source=' + source.uri + '&destination=' + destination.uri + '&description=' + description + '&amount=' + amount + '&timestamp=' + timestamp + '" ' + api.uri + 'insert'
         console.log('cmd', cmd)
 
         exec(cmd, function(err, stdout, stderr){

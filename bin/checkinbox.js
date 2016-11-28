@@ -20,6 +20,7 @@ function bin (argv) {
     if (!err) {
       for (var i = 0; i < arr.length; i++) {
         var file = arr[i]
+        debug('checking', file)
         shell.cat(file, processResult(file))
       }
     } else {
@@ -34,6 +35,7 @@ function bin (argv) {
  * @return {object} a function that processes results
  */
 function processResult (file) {
+  debug('processing', file)
   return function (err, res) {
     if (!err) {
       var store = $rdf.graph()
