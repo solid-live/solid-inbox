@@ -75,7 +75,9 @@ function processResult (file) {
 
       var pt = util.primaryTopic(store, file)
       var CURR = $rdf.Namespace('https://w3id.org/cc#')
-      var isPost = util.is(store, pt, CURR('Credit').uri)
+      if (pt) {
+        var isPost = util.is(store, pt, CURR('Credit').uri)        
+      }
 
       if (isPost) {
         processCredit(store, pt)

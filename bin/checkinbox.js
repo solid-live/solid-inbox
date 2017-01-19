@@ -6,6 +6,7 @@ $rdf = require('rdflib')
 var path = require('path')
 var util = shell.util
 
+
 /**
  * list the contents of a directory
  * @param  {Array} argv Arguments takes inbox
@@ -15,16 +16,44 @@ function bin (argv) {
   if (!uri) {
     console.error('uri is required')
   }
+  //processCredits(uri, function(err, res) {
+  //  if (err) {
+  //    console.error(err)
+  //  } else {
+  //    console.log(res)
+  //  }
+  //})
+  shell.sub(uri, function(err, res) {
+    if (err) {
+      console.error(err)
+    } else {
+      console.log('res', res)
+      processCredits(uri, function(err, res) {
+        if (err) {
+          console.error(err)
+        } else {
+          console.log(res)
+        }
+      })
+    }
+  })
+}
+
+/**
+ * process credits from an inbox
+ * @param  {[type]}   uri      inbox uri
+ * @param  {Function} callback callback function
+ */
+function processCredits(uri, callback) {
   console.log('Scanning inbox:', uri)
   shell.ls(uri, function (err, arr) {
     if (!err) {
       for (var i = 0; i < arr.length; i++) {
         var file = arr[i]
-        debug('checking', file)
         shell.cat(file, processResult(file))
       }
     } else {
-      console.error(err)
+      callback(err)
     }
   })
 }
@@ -44,7 +73,9 @@ function processResult (file) {
 
       var pt = util.primaryTopic(store, file)
       var SIOC = $rdf.Namespace('http://rdfs.org/sioc/ns#')
-      var isPost = util.is(store, pt, SIOC('Post').uri)
+      if (pt) {        
+        var isPost = util.is(store, pt, SIOC('Post').uri)
+      }
 
       if (isPost) {
         processPost(store, pt)
